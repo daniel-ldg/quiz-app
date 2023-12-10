@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+type Question {
+  question      String
+  answers       String[]
+  correctAnswer String
+}
+
+model Quiz {
+  id               String       @id @default(auto()) @map("_id") @db.ObjectId
+  name             String
+  shortDescription String?
+  questions        Question[]
+  gamerResults     GameResult[]
+  Lobbies          Lobby[]
+}
+
+type Player {
+  tokenClientId     String
+  displayName       String
+  preferredColorHue String
+  character         String
+}
+
+type QuestionResult {
+  question Question
+  player   Player
+  response Int
+  score    Int
+}
+
+model GameResult {
+  id      String           @id @default(auto()) @map("_id") @db.ObjectId
+  quiz    Quiz             @relation(fields: [quizId], references: [id])
+  quizId  String           @db.ObjectId
+  results QuestionResult[]
+}
+
+model Lobby {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  quiz        Quiz    @relation(fields: [quizId], references: [id])
+  quizId      String  @db.ObjectId
+  displayName String
+  accessCode  String?
+  host        Player
+}
