@@ -25,11 +25,66 @@ model Quiz {
   Lobbies          Lobby[]
 }
 
+enum Color {
+  gray
+  red
+  orange
+  amber
+  yellow
+  lime
+  green
+  emerald
+  teal
+  cyan
+  sky
+  blue
+  indigo
+  violet
+  purple
+  fuchsia
+  pink
+  rose
+}
+
+enum Avatar {
+  ant
+  bee
+  butterfly
+  cat
+  cow
+  dog
+  dragonfly
+  duck
+  elephant
+  fly
+  fox
+  frog
+  giraffe
+  hippo
+  horse
+  leopard
+  monkey
+  mouse
+  octopus
+  owl
+  panda
+  placeholder
+  quail
+  rabbit
+  shark
+  sheep
+  spider
+  tiger
+  whale
+  wolf
+  zebra
+}
+
 type Player {
-  tokenClientId     String
-  displayName       String
-  preferredColorHue String
-  character         String
+  id     String
+  name   String
+  color  Color
+  avatar Avatar
 }
 
 type QuestionResult {
@@ -47,10 +102,11 @@ model GameResult {
 }
 
 model Lobby {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
-  quiz        Quiz    @relation(fields: [quizId], references: [id])
-  quizId      String  @db.ObjectId
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  quiz        Quiz     @relation(fields: [quizId], references: [id])
+  quizId      String   @db.ObjectId
   displayName String
   accessCode  String?
+  created     DateTime @default(now())
   host        Player
 }
