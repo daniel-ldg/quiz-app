@@ -1,5 +1,11 @@
-const Home: React.FC = () => {
-	return <>Hola</>;
+import Home from "@/components/home/Home";
+
+const Index: React.FC = () => {
+	return (
+		<>
+			<Home />
+		</>
+	);
 };
 
-export default Home;
+export default Index;
