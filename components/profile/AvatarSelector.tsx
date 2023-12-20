@@ -32,7 +32,12 @@ const AvatarSelector: React.FC<Props> = ({ avatar, color, onNextAvatar, onNextCo
 		<div className="flex flex-col items-center">
 			<div className="avatar">
 				<div className={`relative w-32 rounded-full ${COLOR_CLASS_NAME[color]}`}>
-					<Image alt="" src={AVATAR_URL[avatar]} fill />
+					<Image
+						alt={`Avatar ${avatar}`}
+						src={AVATAR_URL[avatar]}
+						fill
+						sizes="(max-width: 768px) 25vw, 15vw"
+					/>
 				</div>
 			</div>
 			<div className="w-full">
