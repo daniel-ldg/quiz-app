@@ -17,12 +17,12 @@ type Question {
 }
 
 model Quiz {
-  id               String       @id @default(auto()) @map("_id") @db.ObjectId
-  name             String
-  shortDescription String?
-  questions        Question[]
-  gamerResults     GameResult[]
-  Lobbies          Lobby[]
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  description  String?
+  questions    Question[]
+  gamerResults GameResult[]
+  Lobbies      Lobby[]
 }
 
 enum Color {
