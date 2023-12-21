@@ -6,13 +6,16 @@ export interface GetTodayQuizzesResponse {
 	quizzes: Array<Pick<Quiz, "id" | "name" | "description">>;
 }
 
-const handler: NextApiHandler<GetTodayQuizzesResponse> = (_, res) => {
+const handler: NextApiHandler<GetTodayQuizzesResponse> = async ({ method }, res) => {
+	if (method !== "GET") {
+		res.setHeader("Allow", "GET");
+		res.status(405).end("Method not allowed.");
+		return;
+	}
 	// for now gets all
-	prisma.quiz
-		.findMany()
-		.then(quizzes => quizzes.map(({ id, name, description }) => ({ id, name, description })))
-		.then(quizzes => res.json({ quizzes }))
-		.catch(() => res.status(500).end());
+	const quizzes = (await prisma.quiz.findMany()).map(({ id, name, description }) => ({ id, name, description }));
+
+	return res.json({ quizzes });
 };
 
 export default handler;
