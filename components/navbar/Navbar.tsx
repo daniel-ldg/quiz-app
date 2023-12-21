@@ -60,9 +60,8 @@ const Navbar: React.FC = () => {
 			<Modal
 				isOpen={isProfileOpen}
 				onClose={closeProfile}
-				hideClose={!player}
-				ignoreBackdrop={!player}
-				ignoreEsc={!player}>
+				canClose={!!player}
+				title={`${!player ? "Configurar" : "Modificar"} perfil`}>
 				<ProfileSetup onDone={closeProfile} />
 			</Modal>
 		</>
