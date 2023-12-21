@@ -1,66 +1,38 @@
-import { PropsWithChildren, useEffect, useRef, useState } from "react";
+import { PropsWithChildren } from "react";
+import Portal from "@rc-component/portal";
 import { IoClose } from "react-icons/io5";
 
 interface Props extends PropsWithChildren {
 	isOpen: boolean;
 	onClose: () => void;
-	hideClose?: boolean;
-	ignoreEsc?: boolean;
-	ignoreBackdrop?: boolean;
-	keepChildMounted?: boolean;
+	canClose?: boolean;
+	title?: string;
 }
 
-const Modal: React.FC<Props> = ({
-	isOpen,
-	onClose,
-	hideClose = false,
-	ignoreEsc = false,
-	ignoreBackdrop = false,
-	keepChildMounted = false,
-	children,
-}) => {
-	const ref = useRef<HTMLDialogElement>(null);
-
-	useEffect(() => {
-		if (isOpen) {
-			ref.current?.showModal();
-		} else {
-			ref.current?.close();
-		}
-	}, [isOpen]);
-
-	const handleEsc = (e: React.MouseEvent<HTMLDialogElement, MouseEvent>) => {
-		if (!ignoreEsc) {
-			onClose();
-		} else {
-			e.preventDefault();
-		}
-	};
-
-	const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement, MouseEvent>) => {
-		if (!ignoreBackdrop && e.target === ref.current) {
+const Modal: React.FC<Props> = ({ isOpen, onClose, canClose = true, title = "", children }) => {
+	const handleBackdropClick = () => {
+		if (canClose) {
 			onClose();
 		}
 	};
-
 	return (
-		<dialog
-			ref={ref}
-			className="modal modal-bottom sm:modal-middle"
-			onClick={handleBackdropClick}
-			onCancel={handleEsc}>
-			<div className="modal-box relative" onClick={e => e.stopPropagation()}>
-				{!hideClose && (
-					<button
-						className="absolute top-3 right-3 bg-transparent border-none text-black cursor-pointer"
-						onClick={onClose}
-						aria-label="Close">
-						<IoClose size={24} />
-					</button>
-				)}
-				{(isOpen || keepChildMounted) && children}
+		<Portal open={isOpen}>
+			<div
+				className="fixed inset-0 z-50 overflow-y-auto bg-gray-600 bg-opacity-50 flex items-center justify-center"
+				onClick={handleBackdropClick}>
+				<div
+					className="bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-lg m-4"
+					onClick={e => e.stopPropagation()}>
+					<div className="flex justify-between items-center border-b p-4">
+						<h3 className="text-lg font-semibold">{title}</h3>
+						<button onClick={onClose} className="text-gray-700" disabled={!canClose}>
+							<IoClose size={24} />
+						</button>
+					</div>
+					<div className="p-4 max-h-[80vh] overflow-y-auto">{children}</div>
+				</div>
 			</div>
-		</dialog>
+		</Portal>
 	);
 };
 
