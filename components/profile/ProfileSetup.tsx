@@ -41,7 +41,6 @@ const ProfileSetup: React.FC<Props> = ({ onDone }) => {
 
 	return (
 		<div className="flex flex-col gap-3">
-			<h3 className="font-bold text-lg">{`${!player ? "Configura" : "Modifica"} tu perfil`}</h3>
 			<AvatarSelector {...{ avatar, color, onNextAvatar, onPrevAvatar, onNextColor, onPrevColor }} />
 			<label className="form-control">
 				<div className="label">
