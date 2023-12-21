@@ -1,14 +1,14 @@
-import { SessionProvider } from "@/context/LocalStorageSession";
+import { PlayerSessionProvider } from "@/context/PlayerSessionContext";
 import type { AppProps } from "next/app";
 import "../style/global.css";
 import Navbar from "@/components/navbar/Navbar";
 
 const App = ({ Component, pageProps }: AppProps) => {
 	return (
-		<SessionProvider>
+		<PlayerSessionProvider>
 			<Navbar />
 			<Component {...pageProps} />
-		</SessionProvider>
+		</PlayerSessionProvider>
 	);
 };
 

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useSessionContext } from "@/context/LocalStorageSession";
+import { usePlayerSession } from "@/context/PlayerSessionContext";
 import Image from "next/image";
 import { CgProfile } from "react-icons/cg";
 import { COLOR_CLASS_NAME } from "../../constants/Colors";
@@ -10,7 +10,7 @@ import { useDisclosure } from "@/hooks/useDisclosure";
 import { FaReact } from "react-icons/fa";
 
 const Navbar: React.FC = () => {
-	const { player, isLoading } = useSessionContext();
+	const { player, isLoading } = usePlayerSession();
 	const [isProfileOpen, { close: closeProfile, open: openProfile }] = useDisclosure();
 
 	const avatar = player?.avatar || "placeholder";

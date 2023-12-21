@@ -4,7 +4,7 @@ import { useDisclosure } from "@/hooks/useDisclosure";
 import TodayQuizzes from "./TodayQuizzes";
 import { useEffect, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useSessionContext } from "@/context/LocalStorageSession";
+import { usePlayerSession } from "@/context/PlayerSessionContext";
 
 interface AccessCodeComponentProps {
 	accessCode: string | null;
@@ -52,7 +52,7 @@ const AccessCodeComponent: React.FC<AccessCodeComponentProps> = ({ accessCode, s
 };
 
 const LobbySetup: React.FC = () => {
-	const { player } = useSessionContext();
+	const { player } = usePlayerSession();
 	const [name, setName] = useState(`Lobby de ${player?.name || "Jugador"}`);
 	const [quizId, setQuizId] = useState<string | undefined>(undefined);
 	const [accessCode, setAccessCode] = useState<string | null>("");

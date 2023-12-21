@@ -1,4 +1,4 @@
-import { useSessionContext } from "@/context/LocalStorageSession";
+import { usePlayerSession } from "@/context/PlayerSessionContext";
 import AvatarSelector from "./AvatarSelector";
 import { Avatar, Color } from "@prisma/client";
 import { useEffect, useState } from "react";
@@ -9,7 +9,7 @@ interface Props {
 }
 
 const ProfileSetup: React.FC<Props> = ({ onDone }) => {
-	const { player, setPlayer } = useSessionContext();
+	const { player, setPlayer } = usePlayerSession();
 	const [name, setName] = useState("");
 
 	const {
