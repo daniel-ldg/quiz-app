@@ -3,48 +3,50 @@ import SmallCard from "@/components/common/SmallCard";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import TodayQuizzes from "./TodayQuizzes";
 import { useEffect, useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { LuRefreshCcw } from "react-icons/lu";
 import { usePlayerSession } from "@/context/PlayerSessionContext";
+import useGet from "@/hooks/useGet";
+import usePost from "@/hooks/usePost";
+import { CreateLobbyBody, CreateLobbyResponse } from "@/pages/api/lobby/create";
+import { SuggestInviteCodeResponse } from "@/pages/api/lobby/suggestInviteCode";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
+import { useRouter } from "next/router";
+import ModalMessage, { MessageType } from "@/components/common/ModalMessage";
 
-interface AccessCodeComponentProps {
-	accessCode: string | null;
-	setAccessCode: (value: string | null) => void;
+const GET_SUGGETED_INVITE_CODE_URL = "/api/lobby/suggestInviteCode";
+const CREATE_LOBBY_URL = "/api/lobby/create";
+
+interface InviteCodeProps {
+	inviteCode: string;
+	setInviteCode: (value: string) => void;
 }
 
-const AccessCodeComponent: React.FC<AccessCodeComponentProps> = ({ accessCode, setAccessCode }) => {
-	const [isPrivate, setIsPrivate] = useState(false);
-	const [showPassword, setShowPassword] = useState(false);
+const InviteCode: React.FC<InviteCodeProps> = ({ inviteCode, setInviteCode }) => {
+	const { data, isLoading, trigger } = useGet<SuggestInviteCodeResponse>({
+		url: GET_SUGGETED_INVITE_CODE_URL,
+		autoTrigger: true,
+	});
 
 	useEffect(() => {
-		if (!isPrivate) {
-			setAccessCode("");
-		} else if (isPrivate && accessCode === "") {
-			setAccessCode(null);
+		if (data) {
+			setInviteCode(data.code);
 		}
-	}, [isPrivate, accessCode, setAccessCode]);
+	}, [data, setInviteCode]);
 
 	return (
 		<div className="flex flex-col gap-2">
-			<h3 className="font-semibold">Agregar código de acceso</h3>
+			<h3 className="font-semibold">Código de invitacion</h3>
 			<div className="join">
-				<button
-					className={`btn btn-sm join-item ${isPrivate ? "btn-secondary" : ""}`}
-					onClick={() => setIsPrivate(!isPrivate)}>
-					{isPrivate ? "Privado" : "Público"}
-				</button>
 				<input
-					type={showPassword ? "text" : "password"}
-					className={`input input-bordered input-sm join-item flex-1 ${!isPrivate && "input-disabled"}`}
-					disabled={!isPrivate}
-					value={accessCode || ""}
-					onChange={e => setAccessCode(e.target.value)}
-					placeholder={isPrivate ? "Escribe el código de acceso aquí" : "Sin código de acceso"}
+					type="text"
+					className="input input-bordered input-sm join-item flex-1"
+					value={inviteCode}
+					onChange={e => setInviteCode(e.target.value)}
+					disabled={isLoading}
+					placeholder="Escribe el código de invitación aquí"
 				/>
-				<button
-					className="btn btn-square btn-sm join-item"
-					onClick={() => setShowPassword(!showPassword)}
-					disabled={!isPrivate}>
-					{showPassword ? <FaEyeSlash /> : <FaEye />}
+				<button className="btn btn-square btn-sm join-item" onClick={trigger} disabled={isLoading}>
+					{isLoading ? <span className="loading loading-spinner"></span> : <LuRefreshCcw />}
 				</button>
 			</div>
 		</div>
@@ -53,29 +55,61 @@ const AccessCodeComponent: React.FC<AccessCodeComponentProps> = ({ accessCode, s
 
 const LobbySetup: React.FC = () => {
 	const { player } = usePlayerSession();
-	const [name, setName] = useState(`Lobby de ${player?.name || "Jugador"}`);
 	const [quizId, setQuizId] = useState<string | undefined>(undefined);
-	const [accessCode, setAccessCode] = useState<string | null>("");
-	const isValid = !!quizId && accessCode !== null && name !== "";
+	const [inviteCode, setInviteCode] = useState<string>("");
+	const isValid = quizId !== undefined && inviteCode !== "";
+	const [isMessageOpen, { open: openMessage, close: closeMessage }] = useDisclosure();
+	const [errorMessage, setErrorMessage] = useState("");
 
-	const handleCreate = () => {};
+	const router = useRouter();
+
+	const { data, status, isError, isLoading, trigger } = usePost<CreateLobbyBody, CreateLobbyResponse>({
+		url: CREATE_LOBBY_URL,
+	});
+
+	const handleCreate = () => {
+		if (isValid && !!player) {
+			trigger({ quizId, inviteCode, hostId: player.id });
+			console.log({ quizId, inviteCode, hostId: player.id });
+		}
+	};
+
+	useEffect(() => {
+		if (data) {
+			router.push(data.url);
+		}
+		if (isError) {
+			if (status === 409) {
+				setErrorMessage("Código de invitacion no disponible. Debes cambiarlo.");
+			} else {
+				setErrorMessage("Ocurrió un error al crear el lobby. Por favor, intenta de nuevo.");
+			}
+			openMessage();
+		}
+	}, [data, isError, openMessage, router, status]);
 
 	return (
-		<div className="flex flex-col gap-3">
-			<h3 className="font-semibold">Nombre del Lobby</h3>
-			<input
-				type="text"
-				className="input input-bordered input-sm"
-				placeholder="Escribe el nombre aquí"
-				value={name}
-				onChange={e => setName(e.target.value)}
+		<>
+			<LoadingOverlay {...{ isLoading }}>
+				<div className="flex flex-col gap-3 w-full">
+					<TodayQuizzes selected={quizId} onSelect={setQuizId} />
+					<InviteCode {...{ inviteCode, setInviteCode }} />
+					<button
+						className="btn btn-secondary btn-sm"
+						onClick={handleCreate}
+						disabled={!isValid || isLoading}>
+						{isLoading ? <span className="loading loading-spinner"></span> : "Crear"}
+					</button>
+				</div>
+			</LoadingOverlay>
+			<ModalMessage
+				isOpen={isMessageOpen}
+				onClose={closeMessage}
+				title="Error"
+				message={errorMessage}
+				type={MessageType.ERROR}
 			/>
-			<TodayQuizzes selected={quizId} onSelect={setQuizId} />
-			<AccessCodeComponent {...{ accessCode, setAccessCode }} />
-			<button className="btn btn-secondary btn-sm" onClick={handleCreate} disabled={!isValid}>
-				Crear
-			</button>
-		</div>
+		</>
 	);
 };
 
