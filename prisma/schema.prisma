@@ -88,7 +88,7 @@ type Player {
 }
 
 type PlayerResponse {
-  player   Player
+  playerId String
   response String
   score    Int
   time     Int
@@ -99,19 +99,17 @@ type QuestionResult {
   responses PlayerResponse[]
 }
 
-model GameResult {
-  id      String           @id @default(auto()) @map("_id") @db.ObjectId
-  quiz    Quiz             @relation(fields: [quizId], references: [id])
-  quizId  String           @db.ObjectId
-  results QuestionResult[]
+type GameResult {
+  players   Player[]
+  questions QuestionResult[]
 }
 
 model Lobby {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  quiz       Quiz     @relation(fields: [quizId], references: [id])
-  quizId     String   @db.ObjectId
-  created    DateTime @default(now())
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  quiz       Quiz        @relation(fields: [quizId], references: [id])
+  quizId     String      @db.ObjectId
+  created    DateTime    @default(now())
   hostId     String
-  name       String
-  accessCode String?
+  inviteCode String
+  gameResult GameResult?
 }
