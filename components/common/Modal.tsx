@@ -2,14 +2,22 @@ import { PropsWithChildren } from "react";
 import Portal from "@rc-component/portal";
 import { IoClose } from "react-icons/io5";
 
+export enum Size {
+	XS = "max-w-xs",
+	SM = "max-w-sm",
+	MD = "max-w-md",
+	LG = "max-w-lg",
+}
+
 interface Props extends PropsWithChildren {
 	isOpen: boolean;
 	onClose: () => void;
 	canClose?: boolean;
 	title?: string;
+	size?: Size;
 }
 
-const Modal: React.FC<Props> = ({ isOpen, onClose, canClose = true, title = "", children }) => {
+const Modal: React.FC<Props> = ({ isOpen, onClose, canClose = true, title = "", size = Size.LG, children }) => {
 	const handleBackdropClick = () => {
 		if (canClose) {
 			onClose();
@@ -21,7 +29,7 @@ const Modal: React.FC<Props> = ({ isOpen, onClose, canClose = true, title = "", 
 				className="fixed inset-0 z-50 overflow-y-auto bg-gray-600 bg-opacity-50 flex items-center justify-center"
 				onClick={handleBackdropClick}>
 				<div
-					className="bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-lg m-4"
+					className={`bg-white rounded-lg shadow-lg overflow-hidden w-full ${size} m-4`}
 					onClick={e => e.stopPropagation()}>
 					<div className="flex justify-between items-center border-b p-4">
 						<h3 className="text-lg font-semibold">{title}</h3>
