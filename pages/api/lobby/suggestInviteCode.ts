@@ -16,10 +16,10 @@ const handler: NextApiHandler<SuggestInviteCodeResponse> = async ({ method }, re
 	let code: string;
 	let activeLobbiesWithSameCode: number;
 	do {
-		code = getRandomCode({ digits: 2 });
+		code = getRandomCode({ digits: 1 });
 		try {
 			activeLobbiesWithSameCode = await prisma.lobby.count({
-				where: { AND: { gameResult: { is: null }, inviteCode: { equals: code } } },
+				where: { AND: { gameResult: { isSet: false }, inviteCode: { equals: code } } },
 			});
 		} catch (_) {
 			res.status(500).end();
