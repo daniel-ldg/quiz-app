@@ -32,27 +32,18 @@ const Navbar: React.FC = () => {
 						<FaReact className="text-5xl opacity-10 ml-3" />
 					</div>
 					<div className="flex-none gap-2">
-						<div className="dropdown dropdown-hover dropdown-end">
-							<div className="flex items-center gap-2">
-								{player && <p className="italic font-medium text-white">{player.name}</p>}
-								<div role="button" className="btn btn-circle avatar">
-									<div className={`relative w-10 rounded-full ${avatarColor}`}>
-										<Image
-											alt={`avatar ${avatar}`}
-											src={avatarUrl}
-											fill
-											sizes="(max-width: 768px) 10vw, 5vw"
-										/>
-									</div>
+						<div className="flex items-center gap-2 cursor-pointer" onClick={openProfile}>
+							{player && <p className="italic font-medium text-white">{player.name}</p>}
+							<div role="button" className="btn btn-circle avatar">
+								<div className={`relative w-10 rounded-full ${avatarColor}`}>
+									<Image
+										alt={`avatar ${avatar}`}
+										src={avatarUrl}
+										fill
+										sizes="(max-width: 768px) 10vw, 5vw"
+									/>
 								</div>
 							</div>
-							<ul className="z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
-								<li>
-									<a onClick={openProfile}>
-										<CgProfile /> Modificar Perfil
-									</a>
-								</li>
-							</ul>
 						</div>
 					</div>
 				</div>
