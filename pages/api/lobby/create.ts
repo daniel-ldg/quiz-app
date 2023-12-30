@@ -8,7 +8,7 @@ export interface CreateLobbyResponse {
 	url: string;
 }
 
-export type CreateLobbyBody = z.infer<typeof bodyValidation>;
+export type CreateLobbyBody = z.infer<typeof createLobbyBody>;
 
 const handler: NextApiHandler<CreateLobbyResponse> = async ({ method, body }, res) => {
 	if (method !== "POST") {
@@ -17,7 +17,7 @@ const handler: NextApiHandler<CreateLobbyResponse> = async ({ method, body }, re
 		return;
 	}
 
-	const validatedBody = bodyValidation.safeParse(body);
+	const validatedBody = createLobbyBody.safeParse(body);
 
 	if (!validatedBody.success) {
 		res.status(400).end();
@@ -49,7 +49,7 @@ const handler: NextApiHandler<CreateLobbyResponse> = async ({ method, body }, re
 	return res.json({ url });
 };
 
-const bodyValidation = z.object({
+const createLobbyBody = z.object({
 	quizId: z.string().refine(isMongoId),
 	hostId: z.string().uuid(),
 	inviteCode: z.string(),
