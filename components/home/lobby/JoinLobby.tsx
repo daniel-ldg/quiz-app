@@ -1,12 +1,22 @@
 import SmallCard from "@/components/common/SmallCard";
-import { useState } from "react";
+import useGet from "@/hooks/useGet";
+import { JoinLobbyResponse } from "@/pages/api/lobby/join";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+
+const JOIN_LOBBY_API_URL = "/api/lobby/join";
 
 const JoinLobby: React.FC = () => {
 	const [code, setCode] = useState("");
+	const { data, trigger, isLoading } = useGet<JoinLobbyResponse>({ url: `${JOIN_LOBBY_API_URL}?inviteCode=${code}` });
+	const router = useRouter();
 
-	const handleJoin = () => {
-		// join
-	};
+	useEffect(() => {
+		if (data) {
+			router.push(data.url);
+		}
+		// todo: handle errors
+	}, [data, router]);
 
 	return (
 		<SmallCard>
@@ -20,8 +30,8 @@ const JoinLobby: React.FC = () => {
 					value={code}
 					onChange={e => setCode(e.target.value)}
 				/>
-				<button className="btn btn-secondary btn-sm join-item" onClick={handleJoin}>
-					Unirse
+				<button className="btn btn-secondary btn-sm join-item" onClick={trigger} disabled={isLoading}>
+					{isLoading ? <span className="loading loading-spinner"></span> : "Unirse"}
 				</button>
 			</div>
 		</SmallCard>
