@@ -70,7 +70,6 @@ const LobbySetup: React.FC = () => {
 	const handleCreate = () => {
 		if (isValid && !!player) {
 			trigger({ quizId, inviteCode, hostId: player.id });
-			console.log({ quizId, inviteCode, hostId: player.id });
 		}
 	};
 
