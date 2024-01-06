@@ -96,6 +96,10 @@ const handler: NextApiHandler = async (_, res) => {
 				response({ players });
 			});
 
+			socket.on("getIsHost", response => {
+				response(socket.data.isHost);
+			});
+
 			socket.on("disconnecting", () => {
 				socket.leave(socket.data.lobbyId);
 				emitRoomPlayerUpdate(io, socket, PlayerUpdateType.left);

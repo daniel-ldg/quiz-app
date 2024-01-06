@@ -65,6 +65,7 @@ export interface ServerToClientEvents {
 
 export interface ClientToServerEvents {
 	getLobbyPlayers: (response: (players: LobbyPlayers) => void) => void;
+	getIsHost: (response: (isHost: boolean) => void) => void;
 	hostStartMatch: () => void;
 	sendAnswer: (answer: AnswerSent, ack: (isOnTime: boolean) => void) => void;
 	updateProfile: (player: Omit<Player, "id">) => void;
