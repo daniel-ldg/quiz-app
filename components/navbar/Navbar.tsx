@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { usePlayerSession } from "@/context/PlayerSessionContext";
 import Image from "next/image";
-import { CgProfile } from "react-icons/cg";
 import { COLOR_CLASS_NAME } from "../../constants/Colors";
 import { AVATAR_URL } from "@/constants/Avatars";
 import Modal from "../common/Modal";
