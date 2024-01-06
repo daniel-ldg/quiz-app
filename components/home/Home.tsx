@@ -1,4 +1,3 @@
-import ExtraInfo from "./ExtraInfo";
 import StartMatch from "./StartMatch";
 
 const Home: React.FC = () => {
