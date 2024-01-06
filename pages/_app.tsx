@@ -6,8 +6,14 @@ import Navbar from "@/components/navbar/Navbar";
 const App = ({ Component, pageProps }: AppProps) => {
 	return (
 		<PlayerSessionProvider>
-			<Navbar />
-			<Component {...pageProps} />
+			<div className="flex flex-col h-full">
+				<div>
+					<Navbar />
+				</div>
+				<div className="grow">
+					<Component {...pageProps} />
+				</div>
+			</div>
 		</PlayerSessionProvider>
 	);
 };
