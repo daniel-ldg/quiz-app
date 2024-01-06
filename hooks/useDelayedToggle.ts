@@ -12,6 +12,7 @@ export const useDelayedToggle = ({
 	delayFalse = 1000,
 }: UseDelayedToggleOptions = {}) => {
 	const [value, setValue] = useState<boolean>(initialState);
+	const [undelayedValue, setUndelayedValue] = useState<boolean>(initialState); // Estado adicional para el valor sin retraso
 	const timeoutRef = useRef<number | null>(null);
 
 	const clearTimeout = () => {
@@ -26,6 +27,7 @@ export const useDelayedToggle = ({
 
 	const setTrue = useCallback(() => {
 		clearTimeout();
+		setUndelayedValue(true); // Actualizar el valor sin retraso inmediatamente
 		timeoutRef.current = window.setTimeout(() => {
 			setValue(true);
 		}, delayTrue);
@@ -33,10 +35,11 @@ export const useDelayedToggle = ({
 
 	const setFalse = useCallback(() => {
 		clearTimeout();
+		setUndelayedValue(false); // Actualizar el valor sin retraso inmediatamente
 		timeoutRef.current = window.setTimeout(() => {
 			setValue(false);
 		}, delayFalse);
 	}, [delayFalse]);
 
-	return { value, setTrue, setFalse };
+	return { value, undelayedValue, setTrue, setFalse };
 };
