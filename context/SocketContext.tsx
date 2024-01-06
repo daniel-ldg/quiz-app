@@ -6,6 +6,7 @@ import { usePlayerSession } from "./PlayerSessionContext";
 import { z } from "zod";
 import { queryValidation } from "@/pages/api/socket";
 import { useDelayedToggle } from "@/hooks/useDelayedToggle";
+import { useEffectOnce } from "@/hooks/useEffectOnce";
 
 const GAME_SOCKET_SERVER_URL = "/api/socket";
 
@@ -25,14 +26,16 @@ export const SocketCtxProvider: React.FC<SocketCtxOptions> = ({ lobbyId, childre
 	const prevStatePlayer = usePrevious(player);
 	const [socket, setSocket] = useState<GameClientSocket>();
 	const {
+		undelayedValue: instantIsConnected,
 		value: isConnected,
 		setTrue: onConnect,
 		setFalse: onDisconnect,
 	} = useDelayedToggle({ initialState: false, delayFalse: 0, delayTrue: 200 });
+	const [isFirstPlayerSet, setIsFirstPlayerSet] = useState(false);
 
 	// Conexión Inicial
 	useEffect(() => {
-		if (isLoading || !player) {
+		if (isLoading || !player || instantIsConnected) {
 			return;
 		}
 		const query: z.infer<typeof queryValidation> = {
@@ -57,7 +60,13 @@ export const SocketCtxProvider: React.FC<SocketCtxOptions> = ({ lobbyId, childre
 			newSocket.disconnect();
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isLoading]);
+	}, [isLoading, isFirstPlayerSet]);
+
+	// This useEffect tracks the initial definition of the 'player' object.
+	// When 'player' is set for the first time, it updates the 'isFirstPlayerSet' state
+	// to true. This state change ensures that the connection logic in the previous useEffect
+	// is triggered only once when 'player' is initially defined and not on subsequent updates.
+	useEffectOnce(() => setIsFirstPlayerSet(true), !!player);
 
 	// send player profile changes on change
 	useEffect(() => {
@@ -70,7 +79,8 @@ export const SocketCtxProvider: React.FC<SocketCtxOptions> = ({ lobbyId, childre
 				}
 			}
 		}
-	}, [socket, player, prevStatePlayer]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [socket, player]);
 
 	return <SocketCtx.Provider value={{ socket, isConnected }}>{children}</SocketCtx.Provider>;
 };
