@@ -33,9 +33,11 @@ const Modal: React.FC<Props> = ({ isOpen, onClose, canClose = true, title = "", 
 					onClick={e => e.stopPropagation()}>
 					<div className="flex justify-between items-center border-b p-4">
 						<h3 className="text-lg font-semibold">{title}</h3>
-						<button onClick={onClose} className="text-gray-700" disabled={!canClose}>
-							<IoClose size={24} />
-						</button>
+						{canClose && (
+							<button onClick={onClose} className="text-gray-700">
+								<IoClose size={24} />
+							</button>
+						)}
 					</div>
 					<div className="p-4 max-h-[80vh] overflow-y-auto">{children}</div>
 				</div>
