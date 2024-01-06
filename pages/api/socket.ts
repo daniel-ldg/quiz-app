@@ -21,6 +21,8 @@ const handler: NextApiHandler = async (_, res) => {
 				// whether to skip middlewares upon successful recovery
 				skipMiddlewares: true,
 			},
+			pingInterval: 5000,
+			pingTimeout: 5000,
 		}) as GameServer;
 
 		io.on("connection", async socket => {
