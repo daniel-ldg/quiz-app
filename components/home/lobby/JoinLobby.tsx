@@ -2,7 +2,7 @@ import SmallCard from "@/components/common/SmallCard";
 import useGet from "@/hooks/useGet";
 import { JoinLobbyResponse } from "@/pages/api/lobby/join";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { FormEventHandler, useEffect, useState } from "react";
 
 const JOIN_LOBBY_API_URL = "/api/lobby/join";
 
@@ -18,22 +18,29 @@ const JoinLobby: React.FC = () => {
 		// todo: handle errors
 	}, [data, router]);
 
+	const handleSubmit: FormEventHandler<HTMLFormElement> = e => {
+		e.preventDefault();
+		trigger();
+	};
+
 	return (
 		<SmallCard>
 			<h2 className="text-lg font-semibold mb-2">Unirse a Lobby</h2>
 			<p className="text-sm text-gray-500 mb-4">Introduce el código invitación para unirte.</p>
-			<div className="join">
+			<form className="join" onSubmit={handleSubmit}>
 				<input
 					type="text"
+					autoCorrect="off"
+					autoCapitalize="none"
 					className="join-item input input-bordered input-sm"
 					placeholder="Escribe el código aquí"
 					value={code}
 					onChange={e => setCode(e.target.value)}
 				/>
-				<button className="btn btn-secondary btn-sm join-item" onClick={trigger} disabled={isLoading}>
+				<button type="submit" className="btn btn-secondary btn-sm join-item" disabled={isLoading}>
 					{isLoading ? <span className="loading loading-spinner"></span> : "Unirse"}
 				</button>
-			</div>
+			</form>
 		</SmallCard>
 	);
 };
