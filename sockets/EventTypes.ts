@@ -63,9 +63,14 @@ export interface ServerToClientEvents {
 	disconnectByGameServer: (reason: ServerDisconnectReason) => void;
 }
 
+export type LobbyInfo = {
+	isHost: boolean;
+	inviteCode: string;
+};
+
 export interface ClientToServerEvents {
 	getLobbyPlayers: (response: (players: LobbyPlayers) => void) => void;
-	getIsHost: (response: (isHost: boolean) => void) => void;
+	getLobbyInfo: (response: (info: LobbyInfo | null) => void) => void;
 	hostStartMatch: () => void;
 	sendAnswer: (answer: AnswerSent, ack: (isOnTime: boolean) => void) => void;
 	updateProfile: (player: Omit<Player, "id">) => void;

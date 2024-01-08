@@ -98,8 +98,19 @@ const handler: NextApiHandler = async (_, res) => {
 				response({ players });
 			});
 
-			socket.on("getIsHost", response => {
-				response(socket.data.isHost);
+			socket.on("getLobbyInfo", async response => {
+				try {
+					const { inviteCode } = await prisma.lobby.findUniqueOrThrow({
+						where: { id: socket.data.lobbyId },
+						select: { inviteCode: true },
+					});
+
+					const { isHost } = socket.data;
+
+					response({ inviteCode, isHost });
+				} catch (_) {
+					response(null);
+				}
 			});
 
 			socket.on("disconnecting", () => {
