@@ -9,7 +9,7 @@ export enum Size {
 	LG = "max-w-lg",
 }
 
-interface Props extends PropsWithChildren {
+export interface ModalProps extends PropsWithChildren {
 	isOpen: boolean;
 	onClose: () => void;
 	canClose?: boolean;
@@ -17,7 +17,7 @@ interface Props extends PropsWithChildren {
 	size?: Size;
 }
 
-const Modal: React.FC<Props> = ({ isOpen, onClose, canClose = true, title = "", size = Size.LG, children }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, canClose = true, title = "", size = Size.LG, children }) => {
 	const handleBackdropClick = () => {
 		if (canClose) {
 			onClose();
