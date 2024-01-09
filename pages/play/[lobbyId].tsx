@@ -1,4 +1,4 @@
-import WaitingLobby from "@/components/lobby/WaitingLobby";
+import MainGame from "@/components/game/MainGame";
 import { SocketCtxProvider } from "@/context/SocketContext";
 import prisma from "@/store/PrismaInstance";
 import { Lobby } from "@prisma/client";
@@ -27,7 +27,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) =
 const Game: React.FC<Props> = ({ lobbyId }) => {
 	return (
 		<SocketCtxProvider lobbyId={lobbyId}>
-			<WaitingLobby />
+			<MainGame />
 		</SocketCtxProvider>
 	);
 };
