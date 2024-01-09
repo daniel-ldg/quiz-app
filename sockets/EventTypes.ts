@@ -70,7 +70,7 @@ export type LobbyInfo = {
 
 export interface ClientToServerEvents {
 	getLobbyPlayers: (response: (players: LobbyPlayers) => void) => void;
-	getLobbyInfo: (response: (info: LobbyInfo | null) => void) => void;
+	getLobbyInfo: (response: (info: LobbyInfo | undefined) => void) => void;
 	hostStartMatch: () => void;
 	sendAnswer: (answer: AnswerSent, ack: (isOnTime: boolean) => void) => void;
 	updateProfile: (player: Omit<Player, "id">) => void;

@@ -4,7 +4,7 @@ import { useEffectOnce } from "../useEffectOnce";
 import { LobbyInfo } from "@/sockets/EventTypes";
 
 const useLobbyInfo = () => {
-	const [lobbyInfo, setLobbyInfo] = useState<LobbyInfo | undefined | null>();
+	const [lobbyInfo, setLobbyInfo] = useState<LobbyInfo>();
 	const context = useContext(SocketCtx);
 
 	if (context === null) {
@@ -18,7 +18,7 @@ const useLobbyInfo = () => {
 		socket?.emit("getLobbyInfo", setLobbyInfo);
 	}, isConnected);
 
-	return { lobbyInfo, isWaiting: lobbyInfo === undefined, isError: lobbyInfo === null };
+	return { lobbyInfo };
 };
 
 export default useLobbyInfo;

@@ -109,7 +109,7 @@ const handler: NextApiHandler = async (_, res) => {
 
 					response({ inviteCode, isHost });
 				} catch (_) {
-					response(null);
+					response(undefined);
 				}
 			});
 
