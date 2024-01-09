@@ -1,4 +1,4 @@
-import BlurBackground from "../common/BlurBackground";
+import BlurBackground from "../../common/BlurBackground";
 import PlayersCircle from "./PlayersCircle";
 import MatchController from "./MatchController";
 
